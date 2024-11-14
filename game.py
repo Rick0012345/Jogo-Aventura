@@ -1,86 +1,51 @@
-from tkinter import *
+import tkinter as tk
 from customtkinter import *
-from tkinter import messagebox
 from PIL import Image, ImageTk, ImageSequence
-import random
 from main import Player, Monster, Game
 
-class TelaBoasVindas:
+class LoopJogo:
     def __init__(self):
-        self.root = CTk()
-        self.root.geometry("800x500")
-        
-        # Configurar weights para centralizar os elementos
-        self.root.grid_rowconfigure(0, weight=0)
-        self.root.grid_rowconfigure(1, weight=0)
-        self.root.grid_rowconfigure(2, weight=0)
-        self.root.grid_columnconfigure(0, weight=1)
-        self.root.grid_columnconfigure(1, weight=1)
-        self.root.grid_columnconfigure(2, weight=1)
-        
-        # Carregar a imagem de fundo da TelaBoasVindas com CTkImage
-        self.bg_image = Image.open("imgs/background.jpg")
-        self.bg_image = CTkImage(self.bg_image, size=(800, 500))  # Converte para CTkImage
-        
-        # Criar um label para a imagem de fundo da TelaBoasVindas
-        self.background_label = CTkLabel(self.root, image=self.bg_image)
-        self.background_label.place(relwidth=1, relheight=1)
-        
-        # Adicionar widgets usando grid com padding menor
-        self.label = CTkLabel(self.root, text="Bem-vindo à Batalha de Monstros! Insira seu nome:", font=("Helvetica", 20), bg_color='transparent', fg_color='#a67521', corner_radius=10)
-        self.label.grid(row=0, column=0, columnspan=3, pady=10, padx=10)
-        
-        self.entry_name = CTkEntry(self.root, font=("Helvetica", 12))
-        self.entry_name.grid(row=1, column=0, columnspan=3, pady=5, padx=10)
-        
-        self.start_button = CTkButton(self.root, text="Iniciar Jogo", command=self.iniciar_jogo)
-        self.start_button.grid(row=2, column=0, columnspan=3, pady=10, padx=10)
-        
-        self.root.mainloop()
+        # Obtenha o nome do jogador diretamente ou configure um nome padrão
+        player_name = "Jogador"  # Pode ser alterado para entrada do usuário, se desejado
 
-    def iniciar_jogo(self):
-        player_name = self.entry_name.get()
-        if player_name.strip() == "":
-            messagebox.showerror("Erro", "Nome não deve ser vazio! ")
-            return
-        
-        # Fechar a tela de boas-vindas
-        self.root.quit()
-        
-        # Criar a animação do GIF de fundo para a tela do jogo
-        self.bg_image_game = Image.open("gifs/cenario_fase_1.gif")
-        self.frames = []
-        
-        # Converter todos os frames para CTkImage e mantê-los em self.frames
-        for frame in ImageSequence.Iterator(self.bg_image_game):
-            frame = CTkImage(frame)  # Converte para CTkImage
-            self.frames.append(frame)
-        
-        self.frame_index = 0
-        
+        # Criar um jogador e um monstro
+        self.player = Player(name=player_name)
+        self.monster = Monster(name="Monstro Selvagem")
+
         # Criar a janela principal do jogo
-        game_window = Tk()
-        game_window.geometry("800x500")
-        
-        # Criar o label de fundo da janela do jogo
-        self.background_label_game = Label(game_window, image=self.frames[self.frame_index])
-        self.background_label_game.place(relwidth=1, relheight=1)
-        
-        # Iniciar a animação do GIF
-        self.animate_gif(game_window)
+        self.game_window = CTk()
+        self.game_window.geometry("800x500")
 
-        player = Player(name=player_name)
-        monster = Monster(name="Monstro Selvagem")
-        
-        game = Game(game_window, player, monster)
-        game_window.mainloop()
+        # Adicionar o GIF de fundo usando um Label
+        self.label = tk.Label(self.game_window)
+        self.label.grid(row=0, column=0, sticky="nsew")  # Usando grid para preencher a tela
 
-    def animate_gif(self, game_window):
-        # Atualiza o fundo com o próximo frame do GIF
-        self.frame_index = (self.frame_index + 1) % len(self.frames)
-        self.background_label_game.configure(image=self.frames[self.frame_index])
-        game_window.after(60, self.animate_gif, game_window)  # Atualiza o GIF a cada 100ms
+        # Redimensionar o GIF para o tamanho da janela com o filtro LANCZOS
+        self.gif_path = "gifs/cenario_fase_1.gif"
+        self.gif = Image.open(self.gif_path)
+        self.frames = [ImageTk.PhotoImage(frame.resize((800, 500), Image.LANCZOS)) for frame in ImageSequence.Iterator(self.gif)]
 
+        # Definir a primeira imagem do GIF no Label
+        self.label.config(image=self.frames[0])
 
-# Inicializa a tela de boas-vindas
-Tela = TelaBoasVindas()
+        # Função para atualizar o GIF na tela
+        self.update_gif(0)
+
+        # Iniciar a classe do jogo
+        self.game = Game(self.game_window, self.player, self.monster)
+
+        # Definir expansão do grid para preencher a tela
+        self.game_window.grid_rowconfigure(0, weight=1)  # Permitindo que a linha de fundo se expanda
+        self.game_window.grid_columnconfigure(0, weight=1)  # Permitindo que a coluna de fundo se expanda
+
+        # Iniciar o loop principal da interface
+        self.game_window.mainloop()
+
+    def update_gif(self, frame_index):
+        # Atualiza o GIF a cada frame
+        self.label.config(image=self.frames[frame_index])
+        next_frame = (frame_index + 1) % len(self.frames)
+        self.game_window.after(100, self.update_gif, next_frame)  # 100 ms de intervalo entre os frames
+
+# Instanciar e iniciar o jogo
+jogo = LoopJogo()
