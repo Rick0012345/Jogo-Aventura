@@ -40,21 +40,27 @@ class Game:
         
         # Configuração da grade
         self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
+        self.root.rowconfigure(4, weight=1)
         
+        # Informações do jogador no canto inferior esquerdo
         self.player_status = tk.Label(root, text=f"{self.player.name}: {self.player.health} de vida", font=("Helvetica", 14))
-        self.player_status.grid(row=0, column=0, pady=10, padx=10)
+        self.player_status.grid(row=4, column=0, sticky="w", padx=10, pady=10)
         
+        # Informações do monstro no canto superior direito
         self.monster_status = tk.Label(root, text=f"{self.monster.name}: {self.monster.health} de vida", font=("Helvetica", 14))
-        self.monster_status.grid(row=1, column=0, pady=10, padx=10)
+        self.monster_status.grid(row=0, column=0, sticky="e", padx=10, pady=10)
         
+        # Status da batalha
         self.status_label = tk.Label(root, text="A batalha começou!", font=("Helvetica", 12))
-        self.status_label.grid(row=2, column=0, pady=10, padx=10)
+        self.status_label.grid(row=1, column=0, pady=10, padx=10)
         
-        self.attack_button = tk.Button(root, text="Atacar", command=self.attack_monster)
-        self.attack_button.grid(row=3, column=0, pady=5, padx=10)
+        # Botões alinhados horizontalmente
+        self.attack_button = tk.Button(root, text="Atacar", command=self.attack_monster, width=15, height=2)
+        self.attack_button.grid(row=2, column=0, pady=5, padx=5, sticky="w")
         
-        self.flee_button = tk.Button(root, text="Fugir", command=self.flee)
-        self.flee_button.grid(row=4, column=0, pady=5, padx=10)
+        self.flee_button = tk.Button(root, text="Fugir", command=self.flee, width=15, height=2)
+        self.flee_button.grid(row=2, column=0, pady=5, padx=5, sticky="e")
     
     def attack_monster(self):
         if self.player.is_alive() and self.monster.is_alive():
@@ -82,3 +88,4 @@ class Game:
         messagebox.showinfo("Fuga", f"{self.player.name} fugiu da batalha!")
         self.root.quit()
 
+# Criando o jogo

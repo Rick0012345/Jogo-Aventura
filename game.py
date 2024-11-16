@@ -45,7 +45,7 @@ class LoopJogo:
         # Atualiza o GIF a cada frame
         self.label.config(image=self.frames[frame_index])
         next_frame = (frame_index + 1) % len(self.frames)
-        self.game_window.after(100, self.update_gif, next_frame)  # 100 ms de intervalo entre os frames
+        self.game_window.after(60, self.update_gif, next_frame)  # 100 ms de intervalo entre os frames
 
 # Instanciar e iniciar o jogo
 jogo = LoopJogo()
