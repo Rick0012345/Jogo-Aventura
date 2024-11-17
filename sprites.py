@@ -29,9 +29,16 @@ class Trex(pygame.sprite.Sprite):
 
         self.atual = 0
         self.image = self.sprites[self.atual]
-
-        self.rect = self.image.get_rect()
-        self.rect.topleft = 100, 100
         
 
+        self.rect = self.image.get_rect()
+        self.rect.topleft = 500, 100
+        
+    def update(self):
+        self.atual = (self.atual + 0.2)
+        if self.atual >= len(self.sprites):
+            self.atual = 0 
+        self.image = self.sprites[int(self.atual)]
+        self.image = pygame.transform.scale(self.image, (177, 192))
+        
 
