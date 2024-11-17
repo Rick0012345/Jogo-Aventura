@@ -7,32 +7,16 @@ class Trex(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.sprites = []
-        self.sprites.append(pygame.image.load('sprites/trex/0.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/1.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/2.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/3.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/4.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/5.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/6.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/7.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/8.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/9.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/10.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/11.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/12.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/13.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/14.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/15.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/16.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/17.png'))
-        self.sprites.append(pygame.image.load('sprites/trex/18.png'))
+
+        for sprite in range(19):
+            self.sprites.append(pygame.image.load(f'sprites/trex/{sprite}.png'))
 
         self.atual = 0
         self.image = self.sprites[self.atual]
         
 
         self.rect = self.image.get_rect()
-        self.rect.topleft = 500, 100
+        self.rect.topleft = 1000, 550
         
     def update(self):
         self.atual = (self.atual + 0.2)
@@ -42,3 +26,35 @@ class Trex(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (177, 192))
         
 
+class Soldado(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.sprites = []
+        
+        for sprite in range(50):
+            self.sprites.append(pygame.image.load(f'sprites/soldado/{sprite}.png'))
+
+        self.atual = 0
+        self.image = self.sprites[self.atual]
+        
+
+        self.rect = self.image.get_rect()
+        self.rect.bottomleft = (100, 750)
+
+    
+    def update(self):
+    # Salva a posição atual do canto inferior esquerdo
+        bottomleft = self.rect.bottomleft
+        
+        # Atualiza a animação
+        self.atual = (self.atual + 0.2)
+        if self.atual >= len(self.sprites):
+            self.atual = 0
+        self.image = self.sprites[int(self.atual)]
+        self.image = pygame.transform.scale(self.image, (177, 192))
+        
+        # Reaplica a posição do canto inferior esquerdo
+        self.rect = self.image.get_rect()
+        self.rect.bottomleft = bottomleft
+
+        
